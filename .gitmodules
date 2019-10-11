@@ -1,0 +1,3 @@
+[submodule "fake-sys"]
+	path = fake-sys
+	url = git@github.com:ru19hackaton-crh/ev3dev-lang-fake-sys.git
