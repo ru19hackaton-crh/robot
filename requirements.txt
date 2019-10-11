@@ -1,2 +1,2 @@
-python-ev3dev
+python-ev3dev2
 tornado
