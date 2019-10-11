@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import logging
+import os
 
 from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B, SpeedPercent, MoveTank
 from ev3dev2.sensor import INPUT_1
@@ -30,7 +31,8 @@ class Logic:
         self.conn = None
 
     async def read_messages(self):
-        url = "ws://localhost:9000/robot"
+        address = os.environ['ROBOT_BRAIN']
+        url = "ws://%s:9000/robot" % address
         self.conn = await websocket_connect(url)
         while True:
             msg = await self.conn.read_message()

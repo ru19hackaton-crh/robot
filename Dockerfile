@@ -7,5 +7,6 @@ WORKDIR /app
 COPY . /app
 
 ENV PYTHONIOENCODING=utf8
+ENV ROBOT_BRAIN=localhost
 
 CMD ["python3", "./fake_main.py"]
