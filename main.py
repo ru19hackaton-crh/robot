@@ -58,7 +58,7 @@ def main():
     logging.info("hello from robot")
 
     logic = Logic()
-    logic_processing = tornado.ioloop.PeriodicCallback(logic.run, 10)
+    logic_processing = tornado.ioloop.PeriodicCallback(logic.run, 100)
     tornado.ioloop.IOLoop.current().spawn_callback(logic.read_messages)
     logic_processing.start()
     tornado.ioloop.IOLoop.current().start()
