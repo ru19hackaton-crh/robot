@@ -33,8 +33,8 @@ def command_drive_on_white():
 def command_find_white():
     logging.info("Find white")
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
-    tank_drive.on_for_rotations(SpeedPercent(10),SpeedPercent(30), 5)
-    tank_drive.on_for_rotations(SpeedPercent(30),SpeedPercent(10), 5)
+    tank_drive.on_for_rotations(SpeedPercent(10),SpeedPercent(30), 1)
+    tank_drive.on_for_rotations(SpeedPercent(30),SpeedPercent(10), 1)
 
 def command_drive(keys):
     logging.info("Driving")
