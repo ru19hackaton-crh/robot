@@ -22,14 +22,16 @@ def command_stop():
 def command_followline(direction):
     logging.info("Following line %s" % direction)
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
+    max_speed = 50
+    min_speed = 40
     a_speed = 0
     b_speed = 0
     if direction == "left":
-        a_speed = SpeedPercent(5)
-        b_speed = SpeedPercent(10)
+        a_speed = SpeedPercent(min_speed)
+        b_speed = SpeedPercent(max_speed)
     elif direction == "right":
-        a_speed = SpeedPercent(10)
-        b_speed = SpeedPercent(5)
+        a_speed = SpeedPercent(max_speed)
+        b_speed = SpeedPercent(min_speed)
     tank_drive.on(a_speed,b_speed)
 
 def command_turn(direction):
