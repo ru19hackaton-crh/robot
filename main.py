@@ -127,8 +127,8 @@ def main():
     logging.info("hello from robot")
 
     logic = Logic()
-    logic_processing = tornado.ioloop.PeriodicCallback(logic.run, 100)
-    colour_processing = tornado.ioloop.PeriodicCallback(logic.send_colour, 100)
+    logic_processing = tornado.ioloop.PeriodicCallback(logic.run, 10)
+    colour_processing = tornado.ioloop.PeriodicCallback(logic.send_colour, 10)
     tornado.ioloop.IOLoop.current().spawn_callback(logic.read_messages)
     logic_processing.start()
     colour_processing.start()
