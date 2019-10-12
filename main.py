@@ -20,16 +20,29 @@ def command_stop():
     tank_drive.stop()
 
 def command_followline(direction):
-    logging.info("Driving")
+    logging.info("Following line %s" % direction)
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
     a_speed = 0
     b_speed = 0
     if direction == "left":
-        a_speed = SpeedPercent(40)
+        a_speed = SpeedPercent(15)
+        b_speed = SpeedPercent(20)
+    elif direction == "right":
+        a_speed = SpeedPercent(20)
+        b_speed = SpeedPercent(15)
+    tank_drive.on(a_speed,b_speed)
+
+def command_turn(direction):
+    logging.info("Turning %s" % direction)
+    tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
+    a_speed = 0
+    b_speed = 0
+    if direction == "left":
+        a_speed = SpeedPercent(0)
         b_speed = SpeedPercent(50)
     elif direction == "right":
         a_speed = SpeedPercent(50)
-        b_speed = SpeedPercent(40)
+        b_speed = SpeedPercent(0)
     tank_drive.on(a_speed,b_speed)
 
 
@@ -97,6 +110,9 @@ class Logic:
                 self.conn.write_message("DONE")
             elif self.current.startswith("LINE"):
                 command_followline(self.current.split(":")[1])
+                self.conn.write_message("DONE")
+            elif self.current.startswith("TURN"):
+                command_turn(self.current.split(":")[1])
                 self.conn.write_message("DONE")
             else:
                 logging.info("UNKNOWN: %s" % self.current)
