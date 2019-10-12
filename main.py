@@ -53,6 +53,7 @@ class Logic:
                 self.conn.write_message("DONE")
             else:
                 logging.info("UNKNOWN: %s" % self.current)
+            self.current = None
 
 def main():
     logging.info("hello from robot")
