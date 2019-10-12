@@ -23,7 +23,7 @@ def command_stop():
 def command_drive_to_maze():
     logging.info("Driving to maze")
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
-    tank_drive.on_for_seconds(SpeedPercent(100),SpeedPercent(100), 2)
+    tank_drive.on_for_seconds(SpeedPercent(100),SpeedPercent(100), 5)
 
 
 def command_drive(keys):
@@ -86,7 +86,7 @@ class Logic:
                 command_stop()
             elif self.current == "DRIVE_TO_MAZE":
                 command_drive_to_maze()
-                tornado.ioloop.IOLoop.current().add_timeout(timedelta(seconds=2), self.send_done)
+                tornado.ioloop.IOLoop.current().add_timeout(timedelta(seconds=5), self.send_done)
             elif self.current.startswith("DRIVE"):
                 command_drive(self.current.split(":")[1])
             else:
