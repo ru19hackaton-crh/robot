@@ -25,11 +25,11 @@ def command_followline(direction):
     a_speed = 0
     b_speed = 0
     if direction == "left":
-        a_speed = SpeedPercent(15)
-        b_speed = SpeedPercent(20)
+        a_speed = SpeedPercent(5)
+        b_speed = SpeedPercent(10)
     elif direction == "right":
-        a_speed = SpeedPercent(20)
-        b_speed = SpeedPercent(15)
+        a_speed = SpeedPercent(10)
+        b_speed = SpeedPercent(5)
     tank_drive.on(a_speed,b_speed)
 
 def command_turn(direction):
@@ -39,9 +39,9 @@ def command_turn(direction):
     b_speed = 0
     if direction == "left":
         a_speed = SpeedPercent(0)
-        b_speed = SpeedPercent(50)
+        b_speed = SpeedPercent(10)
     elif direction == "right":
-        a_speed = SpeedPercent(50)
+        a_speed = SpeedPercent(10)
         b_speed = SpeedPercent(0)
     tank_drive.on(a_speed,b_speed)
 
