@@ -45,5 +45,6 @@ if __name__ == "__main__":
     clean_arena()
     populate_arena([
         ('large_motor', 0, 'outA'),
-        ('large_motor', 1, 'outB'),])
+        ('large_motor', 1, 'outB'),
+        ('color_sensor', 0, 'in1')])
     main()

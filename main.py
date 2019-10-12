@@ -4,7 +4,7 @@ import os
 
 from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B, SpeedPercent, MoveTank
 from ev3dev2.sensor import INPUT_1
-from ev3dev2.sensor.lego import TouchSensor
+from ev3dev2.sensor.lego import TouchSensor, ColorSensor
 from ev3dev2.led import Leds
 
 from tornado.websocket import websocket_connect
@@ -58,6 +58,7 @@ class Logic:
     def __init__(self):
         self.current = None
         self.conn = None
+        self.colour_sensor = ColorSensor()
 
     async def read_messages(self):
         address = os.environ['ROBOT_BRAIN']
@@ -84,13 +85,20 @@ class Logic:
                 logging.info("UNKNOWN: %s" % self.current)
             self.current = None
 
+    def send_colour(self):
+        if self.conn:
+            colour = self.colour_sensor.reflected_light_intensity
+            self.conn.write_message("COLOUR:%s" % colour)
+
 def main():
     logging.info("hello from robot")
 
     logic = Logic()
     logic_processing = tornado.ioloop.PeriodicCallback(logic.run, 100)
+    colour_processing = tornado.ioloop.PeriodicCallback(logic.send_colour, 100)
     tornado.ioloop.IOLoop.current().spawn_callback(logic.read_messages)
     logic_processing.start()
+    colour_processing.start()
     tornado.ioloop.IOLoop.current().start()
 
 if __name__ == "__main__":
