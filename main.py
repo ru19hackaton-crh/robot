@@ -25,6 +25,16 @@ def command_drive_to_maze():
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
     tank_drive.on_for_seconds(SpeedPercent(100),SpeedPercent(100), 5)
 
+def command_drive_on_white():
+    logging.info("Driving on white")
+    tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
+    tank_drive.on(SpeedPercent(100),SpeedPercent(100))
+
+def command_find_white():
+    logging.info("Find white")
+    tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
+    tank_drive.on_for_rotations(SpeedPercent(10),SpeedPercent(30), 5)
+    tank_drive.on_for_rotations(SpeedPercent(30),SpeedPercent(10), 5)
 
 def command_drive(keys):
     logging.info("Driving")
@@ -87,6 +97,10 @@ class Logic:
             elif self.current == "DRIVE_TO_MAZE":
                 command_drive_to_maze()
                 tornado.ioloop.IOLoop.current().add_timeout(timedelta(seconds=5), self.send_done)
+            elif self.current == "DRIVE_ON_WHITE":
+                command_drive_on_white()
+            elif self.current == "FIND_WHITE":
+                command_find_white()
             elif self.current.startswith("DRIVE"):
                 command_drive(self.current.split(":")[1])
             else:
