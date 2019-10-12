@@ -19,12 +19,11 @@ def command_stop():
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
     tank_drive.stop()
 
-def command_followline():
+def command_findline():
     logging.info("Follow line")
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
-    tank_drive.cs = ColorSensor()
-    tank_drive.follow_line(kp=11.3, ki=0.05, kd=3.2,
-        speed=SpeedPercent(30),)
+    tank_drive.on_for_rotations(50, 75, 10)
+    tank_drive.on_for_rotations(75, 50, 20)
 
 def command_drive(keys):
     logging.info("Driving")
@@ -88,8 +87,8 @@ class Logic:
             elif self.current.startswith("DRIVE"):
                 command_drive(self.current.split(":")[1])
                 self.conn.write_message("DONE")
-            elif self.current == "FOLLOWLINE":
-                command_followline()
+            elif self.current == "FINDLINE":
+                command_findline()
                 self.conn.write_message("DONE")
             else:
                 logging.info("UNKNOWN: %s" % self.current)
