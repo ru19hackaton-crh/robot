@@ -30,6 +30,7 @@ def command_followline(direction):
     elif direction == "right":
         a_speed = SpeedPercent(50)
         b_speed = SpeedPercent(25)
+    tank_drive.on(a_speed,b_speed)
 
 
 def command_drive(keys):
