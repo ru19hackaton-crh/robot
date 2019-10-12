@@ -19,10 +19,39 @@ def command_stop():
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
     tank_drive.stop()
 
-def command_drive(directions):
+def command_drive(keys):
     logging.info("Driving")
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
-    tank_drive.on(SpeedPercent(100),SpeedPercent(100))
+    directions = json.loads(keys)
+    a_speed = 0
+    b_speed = 0
+    if "up" in directions:
+        if "left" in directions:
+            a_speed = SpeedPercent(50)
+            b_speed = SpeedPercent(100)
+        elif "right" in directions:
+            a_speed = SpeedPercent(100)
+            b_speed = SpeedPercent(50)
+        else:
+            a_speed = SpeedPercent(100)
+            b_speed = SpeedPercent(100)
+    elif "down" in directions:
+        if "left" in directions:
+            a_speed = SpeedPercent(-50)
+            b_speed = SpeedPercent(-100)
+        elif "right" in directions:
+            a_speed = SpeedPercent(-100)
+            b_speed = SpeedPercent(-50)
+        else:
+            a_speed = SpeedPercent(-100)
+            b_speed = SpeedPercent(-100)
+    elif "left" in directions:
+        a_speed = SpeedPercent(-50)
+        b_speed = SpeedPercent(100)
+    elif "right" in directions:
+        a_speed = SpeedPercent(100)
+        b_speed = SpeedPercent(-50)
+    tank_drive.on(a_speed,b_speed)
 
 class Logic:
 
@@ -49,7 +78,7 @@ class Logic:
                 command_stop()
                 self.conn.write_message("DONE")
             elif self.current.startswith("DRIVE"):
-                command_drive(self.current)
+                command_drive(self.current.split(":")[1])
                 self.conn.write_message("DONE")
             else:
                 logging.info("UNKNOWN: %s" % self.current)
