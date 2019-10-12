@@ -13,13 +13,14 @@ from tornado.log import enable_pretty_logging
 enable_pretty_logging()
 
 import json
+from datetime import timedelta
 
 def command_stop():
     logging.info("Stopping")
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
     tank_drive.stop()
 
-def command_drive_to_maze(direction):
+def command_drive_to_maze():
     logging.info("Driving to maze")
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
     tank_drive.on_for_seconds(SpeedPercent(100),SpeedPercent(100), 5)
@@ -83,16 +84,18 @@ class Logic:
         if self.current:
             if self.current == "STOP":
                 command_stop()
-                self.conn.write_message("DONE")
-            elif self.current.startswith("DRIVE"):
-                command_drive(self.current.split(":")[1])
-                self.conn.write_message("DONE")
             elif self.current == "DRIVE_TO_MAZE":
                 command_drive_to_maze()
-                self.conn.write_message("DONE")
+                tornado.ioloop.IOLoop.current().add_timeout(timedelta(seconds=5), self.send_done)
+            elif self.current.startswith("DRIVE"):
+                command_drive(self.current.split(":")[1])
             else:
                 logging.info("UNKNOWN: %s" % self.current)
             self.current = None
+
+    def send_done(self):
+        logging.info("Done")
+        self.conn.write_message("DONE")
 
     def send_colour(self):
         if self.conn:
