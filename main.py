@@ -86,9 +86,9 @@ class Logic:
         self.right_motor = LargeMotor(OUTPUT_B)
 
     def initPID(self):
-        self.Kp = 400 #180 #400
-        self.Ki = 0#6 #100
-        self.Kd = 0#1286 #10000
+        self.Kp = 400
+        self.Ki = 100
+        self.Kd = 10000
         self.offset = 45
         self.Tp = 60
         self.integral = 0
@@ -140,12 +140,12 @@ class Logic:
     def linefollow(self):
         LightValue = self.colour_sensor.reflected_light_intensity
         error = LightValue - self.offset
-        self.integral = integral + error
-        self.derivative = error - lastError
+        self.integral = self.integral + error
+        self.derivative = error - self.lastError
         Turn = self.Kp * error + self.Ki*self.integral + self.Kd*self.derivative
         Turn = Turn / 100
-        powerA = Tp + Turn
-        powerB = Tp - Turn
+        powerA = self.Tp + Turn
+        powerB = self.Tp - Turn
         self.left_motor.duty_cycle_sp = limits(powerA)
         self.right_motor.duty_cycle_sp = limits(powerB)
         self.lastError = error
