@@ -2,10 +2,7 @@
 import logging
 import os
 
-from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B, SpeedPercent, MoveTank
-from ev3dev2.sensor import INPUT_1
-from ev3dev2.sensor.lego import TouchSensor, ColorSensor
-from ev3dev2.led import Leds
+from ev3dev2.auto import *
 
 from tornado.websocket import websocket_connect
 import tornado.ioloop
@@ -70,12 +67,33 @@ def command_drive(keys):
         b_speed = SpeedPercent(-50)
     tank_drive.on(a_speed,b_speed)
 
+def limits(val):
+    if val > 100:
+        return 100
+    elif val < -100:
+        return -100
+    return val
+
 class Logic:
 
     def __init__(self):
         self.current = None
         self.conn = None
         self.colour_sensor = ColorSensor()
+        self.pid = tornado.ioloop.PeriodicCallback(self.linefollow,10)
+        self.initPID()
+        self.left_motor = LargeMotor(OUTPUT_A)
+        self.right_motor = LargeMotor(OUTPUT_B)
+
+    def initPID(self):
+        self.Kp = 400 #180 #400
+        self.Ki = 0#6 #100
+        self.Kd = 0#1286 #10000
+        self.offset = 45
+        self.Tp = 60
+        self.integral = 0
+        self.lastError = 0
+        self.derivative = 0
 
     async def read_messages(self):
         address = os.environ['ROBOT_BRAIN']
@@ -97,6 +115,14 @@ class Logic:
             elif self.current == "DRIVE_TO_MAZE":
                 command_drive_to_maze()
                 tornado.ioloop.IOLoop.current().add_timeout(timedelta(seconds=5), self.send_done)
+            elif self.current == "FOLLOWLINE":
+                self.left_motor.run_direct()
+                self.right_motor.run_direct()
+                self.pid.start()
+            elif self.current == "STOPFOLLOWLINE":
+                self.pid.stop()
+                self.left_motor.stop()
+                self.right_motor.stop()
             elif self.current == "DRIVE_ON_WHITE":
                 command_drive_on_white()
             elif self.current == "FIND_WHITE":
@@ -110,6 +136,19 @@ class Logic:
     def send_done(self):
         logging.info("Done")
         self.conn.write_message("DONE")
+
+    def linefollow(self):
+        LightValue = self.colour_sensor.reflected_light_intensity
+        error = LightValue - self.offset
+        self.integral = integral + error
+        self.derivative = error - lastError
+        Turn = self.Kp * error + self.Ki*self.integral + self.Kd*self.derivative
+        Turn = Turn / 100
+        powerA = Tp + Turn
+        powerB = Tp - Turn
+        self.left_motor.duty_cycle_sp = limits(powerA)
+        self.right_motor.duty_cycle_sp = limits(powerB)
+        self.lastError = error
 
     def send_colour(self):
         if self.conn:
