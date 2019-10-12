@@ -19,33 +19,10 @@ def command_stop():
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
     tank_drive.stop()
 
-def command_followline(direction):
-    logging.info("Following line %s" % direction)
+def command_drive_to_maze(direction):
+    logging.info("Driving to maze")
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
-    max_speed = 50
-    min_speed = 40
-    a_speed = 0
-    b_speed = 0
-    if direction == "left":
-        a_speed = SpeedPercent(min_speed)
-        b_speed = SpeedPercent(max_speed)
-    elif direction == "right":
-        a_speed = SpeedPercent(max_speed)
-        b_speed = SpeedPercent(min_speed)
-    tank_drive.on(a_speed,b_speed)
-
-def command_turn(direction):
-    logging.info("Turning %s" % direction)
-    tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
-    a_speed = 0
-    b_speed = 0
-    if direction == "left":
-        a_speed = SpeedPercent(-10)
-        b_speed = SpeedPercent(10)
-    elif direction == "right":
-        a_speed = SpeedPercent(10)
-        b_speed = SpeedPercent(-10)
-    tank_drive.on(a_speed,b_speed)
+    tank_drive.on_for_seconds(SpeedPercent(100),SpeedPercent(100), 5)
 
 
 def command_drive(keys):
@@ -110,11 +87,8 @@ class Logic:
             elif self.current.startswith("DRIVE"):
                 command_drive(self.current.split(":")[1])
                 self.conn.write_message("DONE")
-            elif self.current.startswith("LINE"):
-                command_followline(self.current.split(":")[1])
-                self.conn.write_message("DONE")
-            elif self.current.startswith("TURN"):
-                command_turn(self.current.split(":")[1])
+            elif self.current == "DRIVE_TO_MAZE":
+                command_drive_to_maze()
                 self.conn.write_message("DONE")
             else:
                 logging.info("UNKNOWN: %s" % self.current)
