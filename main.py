@@ -84,13 +84,13 @@ class Logic:
         self.initPID()
         self.left_motor = LargeMotor(OUTPUT_A)
         self.right_motor = LargeMotor(OUTPUT_B)
-
-    def initPID(self):
+        self.offset = 45
         self.Kp = 350
         self.Ki = 9
         self.Kd = 1000
-        self.offset = 45
         self.Tp = 30
+
+    def initPID(self):
         self.integral = 0
         self.lastError = 0
         self.derivative = 0
