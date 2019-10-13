@@ -87,10 +87,10 @@ class Logic:
 
     def initPID(self):
         self.Kp = 400
-        self.Ki = 100
-        self.Kd = 10000
+        self.Ki = 10
+        self.Kd = 1000
         self.offset = 45
-        self.Tp = 60
+        self.Tp = 30
         self.integral = 0
         self.lastError = 0
         self.derivative = 0
