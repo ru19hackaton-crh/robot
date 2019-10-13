@@ -86,8 +86,8 @@ class Logic:
         self.right_motor = LargeMotor(OUTPUT_B)
 
     def initPID(self):
-        self.Kp = 400
-        self.Ki = 10
+        self.Kp = 350
+        self.Ki = 9
         self.Kd = 1000
         self.offset = 45
         self.Tp = 30
@@ -121,6 +121,7 @@ class Logic:
                 self.pid.start()
             elif self.current == "STOPFOLLOWLINE":
                 self.pid.stop()
+                self.initPID()
                 self.left_motor.stop()
                 self.right_motor.stop()
             elif self.current == "DRIVE_ON_WHITE":
